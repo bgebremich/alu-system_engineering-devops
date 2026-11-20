@@ -1,7 +1,3 @@
-
 #!/usr/bin/env bash
-
-# connects to my server using the school key
-
+# Connects to the ALU server using the school private key
 ssh -i ~/.ssh/school ubuntu@YOUR_SERVER_IP
-
