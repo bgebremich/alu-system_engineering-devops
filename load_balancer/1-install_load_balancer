@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Installs and configures HAProxy to load balance web-01 and web-02
+apt-get update
+apt-get install -y haproxy
+cat > /etc/haproxy/haproxy.cfg <<'HAPROXY'
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    daemon
+    maxconn 4096
+
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client 50000
+    timeout server 50000
+
+frontend http_front
+    bind *:80
+    stats uri /haproxy?stats
+    default_backend http_back
+
+backend http_back
+    balance roundrobin
+    server 7275-web-01 18.171.239.7:80 check
+    server 7275-web-02 35.177.243.202:80 check
+HAPROXY
+service haproxy restart
